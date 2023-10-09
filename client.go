@@ -50,6 +50,9 @@ func ParamsToSortQuery(params map[string]string) string {
 // VpnPost vpn接口post请求基础模版
 func (c *VpnClient) VpnPost(uri, reqBody string) ([]byte, error) {
 	req, err := http.NewRequest("POST", c.host+uri, strings.NewReader(reqBody))
+	if err != nil {
+		return nil, err
+	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Charset", "UTF-8")
 	body, err := c.FormHttp(req)

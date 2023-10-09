@@ -1,10 +1,12 @@
 package vpn
 
 type VpnRes struct {
-	Code    int    `json:"code"`
-	Success bool   `json:"success"`
-	Message string `json:"message"`
+	Code    int                    `json:"code"`
+	Success bool                   `json:"success"`
+	Message string                 `json:"message"`
+	Result  map[string]interface{} `json:"result"`
 }
+
 type VpnResult struct {
 	Code    int                    `json:"code"`
 	Success bool                   `json:"success"`
