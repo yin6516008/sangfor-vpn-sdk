@@ -1,6 +1,7 @@
 package vpn
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 )
@@ -49,7 +50,7 @@ func TestResetPwd(t *testing.T) {
 		Note:        "sdk测试3",
 		OldName:     "sdkTest3",
 		ParentGroup: "/软件研发中心/软件部",
-		Passwd:      "123456qaz",
+		Passwd:      "ffdfdf",
 		RoleName:    "软件部",
 	}
 	res, err := client.ResetPwd(params)
@@ -73,11 +74,58 @@ func TestGetUserList(t *testing.T) {
 
 func TestDisconnectUser(t *testing.T) {
 	client := NewVpnClient("", "")
-	params := &DisConnectUser{Users: "sdkTest3"}
+	params := &DisConnectUser{Users: ""}
 	res, err := client.DisConnectUser(params)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println(res)
+}
+
+func TestIsUserExist(t *testing.T) {
+	client := NewVpnClient("", "")
+	params := &IsUserExist{Username: ""}
+	res, err := client.IsUserExist(params)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	marshal, err := json.Marshal(res)
+	if err != nil {
+		return
+	}
+	fmt.Println(string(marshal))
+}
+
+func TestIsGroupExist(t *testing.T) {
+	client := NewVpnClient("", "")
+	params := &IsGroupExist{GroupName: ""}
+	res, err := client.IsGroupExist(params)
+	if err != nil {
+		fmt.Println("111")
+		fmt.Println(err)
+		return
+	}
+	marshal, err := json.Marshal(res)
+	if err != nil {
+		return
+	}
+	fmt.Println(string(marshal))
+}
+
+func TestAddGroup(t *testing.T) {
+	client := NewVpnClient("", "")
+	params := &AddGroup{Name: "", ParentGroup: "", Note: ""}
+	res, err := client.AddGroup(params)
+	if err != nil {
+		fmt.Println("111")
+		fmt.Println(err)
+		return
+	}
+	marshal, err := json.Marshal(res)
+	if err != nil {
+		return
+	}
+	fmt.Println(string(marshal))
 }

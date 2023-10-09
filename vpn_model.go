@@ -42,3 +42,17 @@ type GetUserList struct {
 type DisConnectUser struct {
 	Users string `json:"users"`
 }
+
+type IsUserExist struct {
+	Username string `json:"username"`
+}
+
+type IsGroupExist struct {
+	GroupName string `json:"group_name"`
+}
+
+type AddGroup struct {
+	Name        string `json:"name"`
+	ParentGroup string `json:"parent_group"`
+	Note        string `json:"note"`
+}

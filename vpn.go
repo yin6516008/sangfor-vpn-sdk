@@ -139,13 +139,85 @@ func (v *VpnClient) DisConnectUser(p *DisConnectUser) (*VpnRes, error) {
 	if err != nil {
 		return nil, err
 	}
-	addVpnRes := &VpnRes{}
-	if err := json.Unmarshal(res, addVpnRes); err != nil {
+	disConnectUserRes := &VpnRes{}
+	if err := json.Unmarshal(res, disConnectUserRes); err != nil {
 		return nil, err
 	}
 
-	if !addVpnRes.Success {
-		return nil, fmt.Errorf("disconnect user failed, err: %s", addVpnRes.Message)
+	if !disConnectUserRes.Success {
+		return nil, fmt.Errorf("disconnect user failed, err: %s", disConnectUserRes.Message)
 	}
-	return addVpnRes, err
+	return disConnectUserRes, err
+}
+
+// 判断用户是否存在
+func (v *VpnClient) IsUserExist(p *IsUserExist) (*VpnRes, error) {
+	a := NewCommonParams("ExGetUserInfo", "User")
+	m := v.GetSignMap(p, a)
+	params, err := HandleParams(p, m)
+	if err != nil {
+		return nil, err
+	}
+	query := ParamsToSortQuery(params)
+	res, err := v.VpnPost("/cgi-bin/php-cgi/html/delegatemodule/WebApi.php?controler=User&action=ExGetUserInfo", query)
+	if err != nil {
+		return nil, err
+	}
+	isUserExist := &VpnRes{}
+	if err := json.Unmarshal(res, isUserExist); err != nil {
+		return nil, err
+	}
+
+	if !isUserExist.Success {
+		return nil, fmt.Errorf("IsUserExist failed, err: %s", isUserExist.Message)
+	}
+	return isUserExist, err
+}
+
+// 判断用户组是否存在
+func (v *VpnClient) IsGroupExist(p *IsGroupExist) (*VpnRes, error) {
+	a := NewCommonParams("GetGroupInfo", "Group")
+	m := v.GetSignMap(p, a)
+	params, err := HandleParams(p, m)
+	if err != nil {
+		return nil, err
+	}
+	query := ParamsToSortQuery(params)
+	res, err := v.VpnPost("/cgi-bin/php-cgi/html/delegatemodule/WebApi.php?controler=Group&action=GetGroupInfo", query)
+	if err != nil {
+		return nil, err
+	}
+	isGroupExist := &VpnRes{}
+	if err := json.Unmarshal(res, isGroupExist); err != nil {
+		return nil, err
+	}
+
+	if !isGroupExist.Success {
+		return nil, fmt.Errorf("IsGroupExist failed, err: %s", isGroupExist.Message)
+	}
+	return isGroupExist, err
+}
+
+// 新建用户组
+func (v *VpnClient) AddGroup(p *AddGroup) (*VpnRes, error) {
+	a := NewCommonParams("AddGroupCloud", "Group")
+	m := v.GetSignMap(p, a)
+	params, err := HandleParams(p, m)
+	if err != nil {
+		return nil, err
+	}
+	query := ParamsToSortQuery(params)
+	res, err := v.VpnPost("/cgi-bin/php-cgi/html/delegatemodule/WebApi.php?controler=Group&action=AddGroupCloud", query)
+	if err != nil {
+		return nil, err
+	}
+	addGroup := &VpnRes{}
+	if err := json.Unmarshal(res, addGroup); err != nil {
+		return nil, err
+	}
+
+	if !addGroup.Success {
+		return nil, fmt.Errorf("AddGroup failed, err: %s", addGroup.Message)
+	}
+	return addGroup, err
 }
