@@ -2,8 +2,10 @@ package vpn
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
+// 创建用户
 func (v *VpnClient) AddAccount(p *AddAccountParams) (*VpnRes, error) {
 	a := NewCommonParams("AddUserCloud", "User")
 	m := v.GetSignMap(p, a)
@@ -20,9 +22,15 @@ func (v *VpnClient) AddAccount(p *AddAccountParams) (*VpnRes, error) {
 	if err := json.Unmarshal(res, addVpnRes); err != nil {
 		return nil, err
 	}
+
+	if !addVpnRes.Success {
+		return nil, fmt.Errorf("add account failed, err: %s", addVpnRes.Message)
+	}
+
 	return addVpnRes, err
 }
 
+// 删除用户
 func (v *VpnClient) DelAccount(p *DelAccountParams) (*VpnRes, error) {
 	a := NewCommonParams("DelUserByNameCloud", "User")
 	m := v.GetSignMap(p, a)
@@ -39,9 +47,14 @@ func (v *VpnClient) DelAccount(p *DelAccountParams) (*VpnRes, error) {
 	if err := json.Unmarshal(res, delVpnRes); err != nil {
 		return nil, err
 	}
+
+	if !delVpnRes.Success {
+		return nil, fmt.Errorf("del account failed, err: %s", delVpnRes.Message)
+	}
 	return delVpnRes, err
 }
-func (v *VpnClient) GetAccountDetail(p *GetAccountDetailParams) (*VpnResult, error) {
+
+func (v *VpnClient) GetAccountDetail(p *GetAccountDetailParams) (*VpnRes, error) {
 	a := NewCommonParams("ExGetUserInfo", "User")
 	m := v.GetSignMap(p, a)
 	params, err := HandleParams(p, m)
@@ -54,13 +67,18 @@ func (v *VpnClient) GetAccountDetail(p *GetAccountDetailParams) (*VpnResult, err
 	if err != nil {
 		return nil, err
 	}
-	getAccountRes := &VpnResult{}
+	getAccountRes := &VpnRes{}
 	if err := json.Unmarshal(res, getAccountRes); err != nil {
 		return nil, err
+	}
+
+	if !getAccountRes.Success {
+		return nil, fmt.Errorf("get account detail failed, err: %s", getAccountRes.Message)
 	}
 	return getAccountRes, err
 }
 
+//
 func (v *VpnClient) ResetPwd(p *ResetPwdParams) (*VpnRes, error) {
 	a := NewCommonParams("UpdateUserCloud", "User")
 	m := v.GetSignMap(p, a)
@@ -77,10 +95,15 @@ func (v *VpnClient) ResetPwd(p *ResetPwdParams) (*VpnRes, error) {
 	if err := json.Unmarshal(res, resetPwd); err != nil {
 		return nil, err
 	}
+
+	if !resetPwd.Success {
+		return nil, fmt.Errorf("reset pwd failed, err: %s", resetPwd.Message)
+	}
 	return resetPwd, err
 }
 
-func (v *VpnClient) GetUserList(p *GetUserList) (*VpnResult, error) {
+// 获取用户列表
+func (v *VpnClient) GetUserList(p *GetUserList) (*VpnRes, error) {
 	a := NewCommonParams("GetSearchData", "User")
 	m := v.GetSignMap(p, a)
 	params, err := HandleParams(p, m)
@@ -92,13 +115,18 @@ func (v *VpnClient) GetUserList(p *GetUserList) (*VpnResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	getUserList := &VpnResult{}
+	getUserList := &VpnRes{}
 	if err := json.Unmarshal(res, getUserList); err != nil {
 		return nil, err
+	}
+
+	if !getUserList.Success {
+		return nil, fmt.Errorf("get user list failed, err: %s", getUserList.Message)
 	}
 	return getUserList, err
 }
 
+// 断开用户连接
 func (v *VpnClient) DisConnectUser(p *DisConnectUser) (*VpnRes, error) {
 	a := NewCommonParams("KillOnlineUserCloud", "State")
 	m := v.GetSignMap(p, a)
@@ -114,6 +142,10 @@ func (v *VpnClient) DisConnectUser(p *DisConnectUser) (*VpnRes, error) {
 	addVpnRes := &VpnRes{}
 	if err := json.Unmarshal(res, addVpnRes); err != nil {
 		return nil, err
+	}
+
+	if !addVpnRes.Success {
+		return nil, fmt.Errorf("disconnect user failed, err: %s", addVpnRes.Message)
 	}
 	return addVpnRes, err
 }
